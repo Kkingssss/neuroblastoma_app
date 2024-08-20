@@ -1,6 +1,7 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 
 # Define your model structure
 Dense = tf.keras.layers.Dense
@@ -106,13 +107,27 @@ if uploaded_file is not None:
     # Load the NPY file
     data = np.load(uploaded_file)
 
-   
     # Predict using the model
     predictions = model.predict(data)
 
-    # Display predictions
-    st.write("Predictions:")
-    st.write("Status of Disease:", predictions[1])
-    st.write("Location of Tumor:", predictions[2])
-        
-        #st.write("Tumor Classification:", predictions[2])
+    # Extract the predictions
+    status_of_disease = predictions[1].flatten()
+    location_of_tumor = predictions[2].flatten()
+
+    # Create DataFrames for displaying predictions
+    status_df = pd.DataFrame({
+        'Patient Number': [f'Patient {i + 1}' for i in range(len(status_of_disease))],
+        'Status of Disease': status_of_disease
+    })
+
+    location_df = pd.DataFrame({
+        'Patient Number': [f'Patient {i + 1}' for i in range(len(location_of_tumor))],
+        'Location of Tumor': location_of_tumor
+    })
+
+    # Display the DataFrames
+    st.write("Status of Disease:")
+    st.write(status_df)
+
+    st.write("Location of Tumor:")
+    st.write(location_df)

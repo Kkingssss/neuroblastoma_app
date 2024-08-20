@@ -7,5 +7,14 @@ The TensorFlow model processes the data and outputs predictions for:
 NB status
 Location of Tumor
 
-pip install -r requirements.txt
-streamlit run streamlit_app.py
+1. Install the requirements
+
+   ```
+   $ pip install -r requirements.txt
+   ```
+
+2. Run the app
+
+   ```
+   $ streamlit run streamlit_app.py
+   ```

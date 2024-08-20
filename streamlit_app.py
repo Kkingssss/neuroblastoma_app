@@ -95,11 +95,11 @@ model.load_weights(f'k{fold}_best.weights.h5')
 
 # Streamlit app title and description
 st.title("Neuroblastoma Prediction")
-st.write("Upload Plasma and Urine Metabolites")
 
-# File uploader
-uploaded_file = st.file_uploader("Upload a document (.txt or .md)", type=("txt", "md"))
+st.write("Upload Plasma and Urine Metabolites (NPY file)")
 
+# File uploader for NPY files
+uploaded_file = st.file_uploader("Upload a NPY file", type="npy")
 if uploaded_file is not None:
     # Read the uploaded file
     document = uploaded_file.read().decode()

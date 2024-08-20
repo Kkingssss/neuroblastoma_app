@@ -112,17 +112,36 @@ if uploaded_file is not None:
 
     # Extract the predictions
     status_of_disease = predictions[1].flatten()
-    location_of_tumor = predictions[2].flatten()
+    location_of_tumor_probabilities = predictions[2]  # Shape: (num_samples, num_classes)
+
+    # Define tumor location labels
+    tumor_labels = ['Non - NB', 'Adrenal', 'Extra - Adrenal']
+
+    # Get the predicted tumor location
+    location_of_tumor = np.argmax(location_of_tumor_probabilities, axis=1)  # Get index of max probability
+    location_of_tumor_labels = [tumor_labels[i] for i in location_of_tumor]
+
+    # Determine the disease status
+    status_of_disease_labels = ['NB (Neuroblastoma)' if value > 0.8 else 'Not NB' for value in status_of_disease]
 
     # Create DataFrames for displaying predictions
     status_df = pd.DataFrame({
         'Patient Number': [f'Patient {i + 1}' for i in range(len(status_of_disease))],
-        'Status of Disease': status_of_disease
+        'Status of Disease Value': status_of_disease,
+        'Status of Disease': status_of_disease_labels
     })
 
     location_df = pd.DataFrame({
-        'Patient Number': [f'Patient {i + 1}' for i in range(len(location_of_tumor))],
-        'Location of Tumor': location_of_tumor
+        'Patient Number': [f'Patient {i + 1}' for i in range(len(location_of_tumor_labels))],
+        'Location of Tumor': location_of_tumor_labels
+    })
+
+    # Create a summary column based on the location of tumor
+    location_summary = ['Non - NB' if loc == 'Non - NB' else loc for loc in location_of_tumor_labels]
+
+    summary_df = pd.DataFrame({
+        'Patient Number': [f'Patient {i + 1}' for i in range(len(location_summary))],
+        'Location of Tumor': location_summary
     })
 
     # Display the DataFrames
@@ -131,3 +150,6 @@ if uploaded_file is not None:
 
     st.write("Location of Tumor:")
     st.write(location_df)
+
+    st.write("Summary:")
+    st.write(summary_df)

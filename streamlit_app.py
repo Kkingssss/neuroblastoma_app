@@ -98,8 +98,7 @@ model.load_weights(f'k{fold}_best.weights.h5')
 
 # Streamlit app title and description
 st.title("Neuroblastoma Prediction")
-
-st.write("Upload Plasma and Urine Metabolites (NPY file)")
+st.markdown("### Upload Plasma and Urine Metabolites (NPY file)")
 
 # File uploader for NPY files
 uploaded_file = st.file_uploader("Upload a NPY file", type="npy")
@@ -122,7 +121,7 @@ if uploaded_file is not None:
     location_of_tumor_labels = [tumor_labels[i] for i in location_of_tumor]
 
     # Determine the disease status
-    status_of_disease_labels = ['NB ' if value > 0.8 else 'Not NB' for value in status_of_disease]
+    status_of_disease_labels = ['NB (Neuroblastoma)' if value > 0.8 else 'Not NB' for value in status_of_disease]
 
     # Create DataFrames for displaying predictions
     status_df = pd.DataFrame({
@@ -144,11 +143,38 @@ if uploaded_file is not None:
         'Location of Tumor': location_summary
     })
 
-    # Display the DataFrames
-    st.write("Status of Disease:")
-    st.write(status_df)
+    # Display the DataFrames with custom styling
+    st.subheader("Status of Disease")
+    st.dataframe(status_df.style.format({'Status of Disease Value': '{:.4f}'}))
 
-    st.write("Location of Tumor:")
-    st.write(location_df)
+    st.subheader("Location of Tumor")
+    st.dataframe(location_df)
 
+    st.subheader("Summary")
+    st.dataframe(summary_df)
 
+    # Adding a downloadable CSV link
+    csv_status = status_df.to_csv(index=False)
+    csv_location = location_df.to_csv(index=False)
+    csv_summary = summary_df.to_csv(index=False)
+
+    st.download_button(
+        label="Download Status of Disease",
+        data=csv_status,
+        file_name='status_of_disease.csv',
+        mime='text/csv'
+    )
+
+    st.download_button(
+        label="Download Location of Tumor",
+        data=csv_location,
+        file_name='location_of_tumor.csv',
+        mime='text/csv'
+    )
+
+    st.download_button(
+        label="Download Summary",
+        data=csv_summary,
+        file_name='summary.csv',
+        mime='text/csv'
+    )

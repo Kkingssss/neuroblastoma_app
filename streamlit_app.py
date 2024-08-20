@@ -168,9 +168,4 @@ if uploaded_file is not None:
         mime='text/csv'
     )
 
-    st.download_button(
-        label="Download Summary",
-        data=csv_summary,
-        file_name='summary.csv',
-        mime='text/csv'
-    )
+

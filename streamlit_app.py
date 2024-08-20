@@ -115,6 +115,7 @@ if uploaded_file is not None:
 
         # Display predictions
         st.write("Predictions:")
-        st.write("Status of Disease:", predictions[0])
-        st.write("Location of Tumor:", predictions[1])
+        st.write("Status of Disease:", predictions[1])
+        st.write("Location of Tumor:", predictions[2])
+        
         #st.write("Tumor Classification:", predictions[2])

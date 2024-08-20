@@ -106,16 +106,13 @@ if uploaded_file is not None:
     # Load the NPY file
     data = np.load(uploaded_file)
 
-    # Check data shape
-    if data.ndim != 3 or data.shape[1:] != (5, 2):
-        st.error("Uploaded NPY file must have shape (samples, 5, 2).")
-    else:
-        # Predict using the model
-        predictions = model.predict(data)
+   
+    # Predict using the model
+    predictions = model.predict(data)
 
-        # Display predictions
-        st.write("Predictions:")
-        st.write("Status of Disease:", predictions[1])
-        st.write("Location of Tumor:", predictions[2])
+    # Display predictions
+    st.write("Predictions:")
+    st.write("Status of Disease:", predictions[1])
+    st.write("Location of Tumor:", predictions[2])
         
         #st.write("Tumor Classification:", predictions[2])

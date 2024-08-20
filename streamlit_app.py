@@ -121,7 +121,7 @@ if uploaded_file is not None:
     location_of_tumor_labels = [tumor_labels[i] for i in location_of_tumor]
 
     # Determine the disease status
-    status_of_disease_labels = ['NB (Neuroblastoma)' if value > 0.8 else 'Not NB' for value in status_of_disease]
+    status_of_disease_labels = ['NB ' if value > 0.8 else 'Not NB' for value in status_of_disease]
 
     # Create DataFrames for displaying predictions
     status_df = pd.DataFrame({
@@ -149,9 +149,6 @@ if uploaded_file is not None:
 
     st.subheader("Location of Tumor")
     st.dataframe(location_df)
-
-    st.subheader("Summary")
-    st.dataframe(summary_df)
 
     # Adding a downloadable CSV link
     csv_status = status_df.to_csv(index=False)

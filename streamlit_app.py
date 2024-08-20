@@ -151,5 +151,4 @@ if uploaded_file is not None:
     st.write("Location of Tumor:")
     st.write(location_df)
 
-    st.write("Summary:")
-    st.write(summary_df)
+

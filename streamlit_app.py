@@ -1,5 +1,6 @@
 import streamlit as st
 import tensorflow as tf
+import numpy as np
 
 # Define your model structure
 Dense = tf.keras.layers.Dense
@@ -59,35 +60,36 @@ def build(N):
 nPer = lambda x, p: np.percentile(x[~np.isnan(x)], p, axis=0)
 
 def nOut(x, k=1.5):
-  q25,q75 = nPer(x, 25),nPer(x, 75)
-  iqr = q75-q25
-  return q25 - k*iqr, q75 + k*iqr
+    q25,q75 = nPer(x, 25),nPer(x, 75)
+    iqr = q75-q25
+    return q25 - k*iqr, q75 + k*iqr
 
 def lognorm(x, u):
-  x = np.clip(x, 0, np.max(x))
-  return np.log(x+1)/np.log(u+1)
+    x = np.clip(x, 0, np.max(x))
+    return np.log(x+1)/np.log(u+1)
 
 def nLogNorm(x, u):
-  a = copy(x)
-  aw = np.where(~np.isnan(a))
-  a[aw] = lognorm(a[aw], u)
-  return a
+    a = np.copy(x)
+    aw = np.where(~np.isnan(a))
+    a[aw] = lognorm(a[aw], u)
+    return a
 
 def nLogNorm_out(x, U=None, k=1.5):
-  A = []
-  if np.any(U==None):
-    U = []
-    for i in range(x.shape[1]):
-      upper = nOut(x[:,i], k)[1]
-      a = nLogNorm(x[:,i], upper)
-      A.append(a)
-      U.append(upper)
-  else:
-    for i in range(x.shape[1]):
-      upper = U[i]
-      a = nLogNorm(x[:,i], upper)
-      A.append(a)
-  return np.stack(A, axis=1), np.array(U)
+    A = []
+    if np.any(U==None):
+        U = []
+        for i in range(x.shape[1]):
+            upper = nOut(x[:,i], k)[1]
+            a = nLogNorm(x[:,i], upper)
+            A.append(a)
+            U.append(upper)
+    else:
+        for i in range(x.shape[1]):
+            upper = U[i]
+            a = nLogNorm(x[:,i], upper)
+            A.append(a)
+    return np.stack(A, axis=1), np.array(U)
+
 # Load the model
 model = build(5)
 fold = 'full'
@@ -101,20 +103,18 @@ st.write("Upload Plasma and Urine Metabolites (NPY file)")
 # File uploader for NPY files
 uploaded_file = st.file_uploader("Upload a NPY file", type="npy")
 if uploaded_file is not None:
-    # Read the uploaded file
-    document = uploaded_file.read().decode()
+    # Load the NPY file
+    data = np.load(uploaded_file)
 
-    # Preprocess the document to extract data for the model
-    # Assuming the document contains a structured format that you can parse
-    # For demonstration, we're using dummy data. Replace this with actual data extraction.
-    # For example: data = parse_document(document)
-    data = tf.random.normal((1, 5, 2))  # Replace this with actual parsed data
+    # Check data shape
+    if data.ndim != 3 or data.shape[1:] != (5, 2):
+        st.error("Uploaded NPY file must have shape (samples, 5, 2).")
+    else:
+        # Predict using the model
+        predictions = model.predict(data)
 
-    # Predict using the model
-    predictions = model.predict(data)
-
-    # Display predictions
-    st.write("Predictions:")
-    st.write("Status of Disease:", predictions[0])
-    st.write("Local of Tumor:", predictions[1])
-    #st.write("Categorical Classification Output:", predictions[2])
+        # Display predictions
+        st.write("Predictions:")
+        st.write("Status of Disease:", predictions[0])
+        st.write("Location of Tumor:", predictions[1])
+        #st.write("Tumor Classification:", predictions[2])

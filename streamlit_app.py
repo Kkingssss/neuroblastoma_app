@@ -153,7 +153,6 @@ if uploaded_file is not None:
     # Adding a downloadable CSV link
     csv_status = status_df.to_csv(index=False)
     csv_location = location_df.to_csv(index=False)
-    csv_summary = summary_df.to_csv(index=False)
 
     st.download_button(
         label="Download Status of Disease",

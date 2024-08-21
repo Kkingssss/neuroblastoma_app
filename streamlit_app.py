@@ -121,7 +121,7 @@ if uploaded_file is not None:
     location_of_tumor_labels = [tumor_labels[i] for i in location_of_tumor]
 
     # Determine the disease status
-    status_of_disease_labels = ['NB ' if value > 0.8 else 'Not NB' for value in status_of_disease]
+    status_of_disease_labels = ['NB ' if value > 0.825 else 'Not NB' for value in status_of_disease]
 
     # Create DataFrames for displaying predictions
     status_df = pd.DataFrame({

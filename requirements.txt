@@ -1,5 +1,4 @@
-tensorflow-cpu
-numpy
+tensorflow-cpu==2.15.0
 pandas
 plotly
 openpyxl
